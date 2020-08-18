@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: GLSL-basic-shader
-  m_Shader: {fileID: 4800000, guid: f8396229fd3197343bc7f040f5f3c0bf, type: 3}
+  m_Name: GLSL-RGB-Cube
+  m_Shader: {fileID: 4800000, guid: ca0818d2cbf8bf140be437a2824ee585, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
