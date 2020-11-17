@@ -6,8 +6,8 @@
         {
             GLSLPROGRAM
             #ifdef VERTEX // here begins the vertex shader
-            //varying变量是vertex和fragment shader之间做数据传递用的
-            varying vec4 color;
+            //out变量是vertex和fragment shader之间做数据传递用的
+            out vec4 color;
             // this is a varying variable in the vertex shader
             void main()
             {
@@ -19,8 +19,7 @@
             #endif // here ends the vertex shader
 
             #ifdef FRAGMENT // here begins the fragment shader
-            varying vec4 color;
-            // this is a varying variable in the fragment shader
+            in vec4 color;
             void main()
             {
                 //使用cube对象空间的顶点坐标的xyz值作为rgb输出
