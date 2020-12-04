@@ -1,0 +1,15 @@
+﻿#ifndef CUSTOM_INCLUDED
+#define CUSTOM_INCLUDED
+const vec4 bitEnc = vec4(1.,255.,65025.,16581375.);
+const vec4 bitDec = 1./bitEnc;
+vec4 EncodeFloatRGBA (float v) {
+    vec4 enc = bitEnc * v;
+    enc = fract(enc);//对应cg/hlsl的frac
+    enc -= enc.yzww * vec2(1./255., 0.).xxxy;
+    return enc;
+}
+
+float DecodeFloatRGBA (vec4 v) {
+    return dot(v, bitDec);
+}
+#endif
