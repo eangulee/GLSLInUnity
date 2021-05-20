@@ -69,20 +69,20 @@ Shader "GLSL/ShadowMapping/Receiver" {
 				vec2 uv = shadowCoord.xy / shadowCoord.w;
 				uv = uv * 0.5 + 0.5; //(-1, 1)-->(0, 1)
 
-				float depth = shadowCoord.z / shadowCoord.w;
-			#if defined (SHADER_TARGET_GLSL)
-				depth = depth * 0.5 + 0.5; //(-1, 1)-->(0, 1)
-			#elif defined (UNITY_REVERSED_Z)
+				float depth = shadowCoord.z / shadowCoord.w;			
+			#if defined (UNITY_REVERSED_Z)
 				depth = 1 - depth;       //(1, 0)-->(0, 1)
+			#else
+				depth = depth * 0.5 + 0.5; //(-1, 1)-->(0, 1)
 			#endif
 				// PCFSample
-				// float shadow = PCFSample(depth, uv);
-				// gl_FragColor = vec4(shadow, shadow, shadow, shadow);
-
+				float shadow = PCFSample(depth, uv);
+				
 				// sample depth texture
-				vec4 col = texture(_gShadowMapTexture, uv);//310以后texture2D过期了，使用texture函数
-				float sampleDepth = DecodeFloatRGBA(col);
-				float shadow = sampleDepth < depth ? _gShadowStrength : 1.0;//接受物体片元的深度与深度图的值比较，大于则表示被挡住灯光，显示为阴影，否则显示自己的颜色（这里显示白色）
+				// vec4 col = texture(_gShadowMapTexture, uv);//310以后texture2D过期了，使用texture函数
+				// float sampleDepth = DecodeFloatRGBA(col);
+				// float shadow = sampleDepth < depth ? _gShadowStrength : 1.0;//接受物体片元的深度与深度图的值比较，大于则表示被挡住灯光，显示为阴影，否则显示自己的颜色（这里显示白色）
+				
 				gl_FragColor = vec4(shadow, shadow, shadow, shadow);
 			}
 			#endif

@@ -45,10 +45,10 @@ Shader "GLSL/ShadowMapping/Caster"
 			{
 				float depth = v.depth.x / v.depth.y;
 
-			#if defined (SHADER_TARGET_GLSL) 
-				depth = depth* 0.5 + 0.5; //(-1, 1)-->(0, 1)
-			#elif defined (UNITY_REVERSED_Z) //如果是使用的reverzed-z，需要处理一下
-				depth = 1.0 - depth;       //(1, 0)-->(0, 1)
+			#if defined (UNITY_REVERSED_Z)
+				depth = 1 - depth;       //(1, 0)-->(0, 1)
+			#else
+				depth = depth*0.5 + 0.5; //(-1, 1)-->(0, 1)
 			#endif
 
 				gl_FragColor = EncodeFloatRGBA(depth);
