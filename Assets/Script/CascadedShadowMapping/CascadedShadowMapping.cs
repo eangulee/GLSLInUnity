@@ -8,6 +8,8 @@ public class CascadedShadowMapping : MonoBehaviour
     Camera dirLightCamera;//灯光空间的相机
 
     public int shadowResolution = 1;
+    public float shadowBias = 0.005f;
+    public float shadowStrength = 0.5f;
     public Shader shadowCaster = null;
 
     private Matrix4x4 biasMatrix = Matrix4x4.identity;
@@ -53,7 +55,7 @@ public class CascadedShadowMapping : MonoBehaviour
 
         for (int i = 0; i < 4; i++)
         {
-            depthTextures[i] = new RenderTexture(1024, 1024, 24, rtFormat);
+            depthTextures[i] = new RenderTexture(1024*shadowResolution, 1024*shadowResolution, 24, rtFormat);
             Shader.SetGlobalTexture("_gShadowMapTexture" + i, depthTextures[i]);
         }
     }
@@ -92,8 +94,8 @@ public class CascadedShadowMapping : MonoBehaviour
                 CreateRenderTexture();
             }
 
-            Shader.SetGlobalFloat("_gShadowBias", 0.005f);
-            Shader.SetGlobalFloat("_gShadowStrength", 0.5f);
+            Shader.SetGlobalFloat("_gShadowBias", shadowBias);
+            Shader.SetGlobalFloat("_gShadowStrength", shadowStrength);
 
             world2ShadowMats.Clear();
             //构建4级阴影纹理
