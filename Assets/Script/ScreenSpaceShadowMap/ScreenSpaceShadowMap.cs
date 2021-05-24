@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Profiling;
 
 [RequireComponent(typeof(Camera))]
 public class ScreenSpaceShadowMap : MonoBehaviour {
@@ -118,6 +119,7 @@ public class ScreenSpaceShadowMap : MonoBehaviour {
             _depthCamera.transform.localRotation = Quaternion.identity;
         }
 
+        Profiler.BeginSample("ScreenSpaceShadowMap");
         _depthCamera.RenderWithShader(shadowCasterMat.shader, "");
 
         if (!_lightCamera)
@@ -156,6 +158,6 @@ public class ScreenSpaceShadowMap : MonoBehaviour {
         Graphics.Blit(depthTexture, screenSpaceShadowTexture, shadowCollectorMat);
 
         Shader.SetGlobalTexture("_ScreenSpceShadowTexture", screenSpaceShadowTexture);
-
+        Profiler.EndSample();
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Profiling;
 
 public class ShadowMapping : MonoBehaviour
 {
@@ -59,12 +60,14 @@ public class ShadowMapping : MonoBehaviour
                 dirLightCamera = CreateDirLightCamera();
                 dirLightCamera.targetTexture = CreateRenderTexture();
             }
+            Profiler.BeginSample("ShadowMapping");
             //dirLightCamera.RenderWithShader(shadowCaster, "");//没用
             dirLightCamera.SetReplacementShader(shadowCaster, "RenderType");
             Shader.SetGlobalFloat("_gShadowBias", 0.005f);
             Shader.SetGlobalFloat("_gShadowStrength", 0.5f);
             Matrix4x4 projectionMatrix = GL.GetGPUProjectionMatrix(dirLightCamera.projectionMatrix, false);
             Shader.SetGlobalMatrix("_gWorldToShadow", projectionMatrix * dirLightCamera.worldToCameraMatrix);
+            Profiler.EndSample();
         }
     }
 }

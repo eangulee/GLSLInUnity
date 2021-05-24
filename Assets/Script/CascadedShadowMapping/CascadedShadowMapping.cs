@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Profiling;
 
 public class CascadedShadowMapping : MonoBehaviour
 {
@@ -82,6 +83,7 @@ public class CascadedShadowMapping : MonoBehaviour
 
     private void Update()
     {
+        Profiler.BeginSample("CascadedShadowMapping");
         CalcMainCameraSplitsFrustumCorners();
         CalcLightCameraSplitsFrustum();
 
@@ -112,6 +114,7 @@ public class CascadedShadowMapping : MonoBehaviour
 
             Shader.SetGlobalMatrixArray("_gWorld2Shadow", world2ShadowMats);
         }
+        Profiler.EndSample();
     }
 
     float[] _LightSplitsNear;
