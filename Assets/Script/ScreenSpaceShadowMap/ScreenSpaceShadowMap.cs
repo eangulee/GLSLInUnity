@@ -13,6 +13,8 @@ public class ScreenSpaceShadowMap : MonoBehaviour {
     public float orthographicSize = 6f;
     public float nearClipPlane = 0.3f;
     public float farClipPlane = 20f;
+    public float shadowBias = 0.005f;
+    public float shadowStrength = 0.5f;
 
     public static Camera _depthCamera;
     RenderTexture depthTexture = null;
@@ -92,8 +94,9 @@ public class ScreenSpaceShadowMap : MonoBehaviour {
 
     private RenderTexture CreateTextureFor(Camera cam)
     {
-        RenderTexture rt = new RenderTexture(Screen.width * qulity, Screen.height * qulity, 24, RenderTextureFormat.Default);
-        rt.hideFlags = HideFlags.DontSave;        
+        RenderTexture rt = new RenderTexture(Screen.width * qulity, Screen.height * qulity, 24, RenderTextureFormat.R8);
+        rt.hideFlags = HideFlags.DontSave;
+        rt.autoGenerateMips = false;
 
         return rt;
     }
@@ -115,18 +118,6 @@ public class ScreenSpaceShadowMap : MonoBehaviour {
             _depthCamera.transform.localRotation = Quaternion.identity;
         }
 
-
-        //if (posWorld_rt == null)
-        //{
-        //    posWorld_rt = new RenderTexture(Screen.width, Screen.height, 24, RenderTextureFormat.ARGBFloat);
-        //}
-
-        //_depthCamera.targetTexture = posWorld_rt;
-
-        //_depthCamera.RenderWithShader(posWorldMat.shader, "");
-
-        //_depthCamera.targetTexture = depth_rt;
-
         _depthCamera.RenderWithShader(shadowCasterMat.shader, "");
 
         if (!_lightCamera)
@@ -141,6 +132,8 @@ public class ScreenSpaceShadowMap : MonoBehaviour {
         _lightCamera.orthographicSize = orthographicSize;
         _lightCamera.nearClipPlane = nearClipPlane;
         _lightCamera.farClipPlane = farClipPlane;
+        Shader.SetGlobalFloat("_gShadowBias", shadowBias);
+        Shader.SetGlobalFloat("_gShadowStrength", shadowStrength);
 
         _lightCamera.RenderWithShader(shadowCasterMat.shader, "");
 
@@ -148,8 +141,9 @@ public class ScreenSpaceShadowMap : MonoBehaviour {
         // shadow collector
         if (screenSpaceShadowTexture == null)
         {
-            screenSpaceShadowTexture = new RenderTexture(Screen.width * qulity, Screen.height * qulity, 0, RenderTextureFormat.Default);
+            screenSpaceShadowTexture = new RenderTexture(Screen.width * qulity, Screen.height * qulity, 0, RenderTextureFormat.R8);
             screenSpaceShadowTexture.hideFlags = HideFlags.DontSave;
+            screenSpaceShadowTexture.autoGenerateMips = false;
         }
 
         Matrix4x4 projectionMatrix = GL.GetGPUProjectionMatrix(Camera.main.projectionMatrix, false);
@@ -157,11 +151,11 @@ public class ScreenSpaceShadowMap : MonoBehaviour {
 
         shadowCollectorMat.SetTexture("_CameraDepthTex", depthTexture);
         shadowCollectorMat.SetTexture("_LightDepthTex", lightDepthTexture);
+        projectionMatrix = GL.GetGPUProjectionMatrix(_lightCamera.projectionMatrix, false);
+        Shader.SetGlobalMatrix("_WorldToShadow", projectionMatrix * _lightCamera.worldToCameraMatrix);
         Graphics.Blit(depthTexture, screenSpaceShadowTexture, shadowCollectorMat);
 
         Shader.SetGlobalTexture("_ScreenSpceShadowTexture", screenSpaceShadowTexture);
 
-        projectionMatrix = GL.GetGPUProjectionMatrix(_lightCamera.projectionMatrix, false);
-        Shader.SetGlobalMatrix("_WorldToShadow", projectionMatrix * _lightCamera.worldToCameraMatrix);
     }
 }

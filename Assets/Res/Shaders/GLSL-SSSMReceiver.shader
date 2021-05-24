@@ -46,8 +46,7 @@ Shader "GLSL/ScreenSpaceShadowMapping/Receiver" {
 //				sceneUVs.y = _ProjectionParams.x < 0.0 ? (1.0 - sceneUVs.y) : sceneUVs.y;
 //#endif
 				float shadow = texture(_ScreenSpceShadowTexture, sceneUVs).r;
-				vec4 col = texture(_MainTex, v.uv.xy) * _Color;
-				col.xyz *= shadow;
+				vec4 col = texture(_MainTex, v.uv.xy) * _Color * shadow;
 				gl_FragColor = col;
 			}
 			#endif

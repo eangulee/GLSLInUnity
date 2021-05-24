@@ -26,6 +26,7 @@ Shader "GLSL/ScreenSpaceShadowMapping/Collector"
 
 			uniform mat4 _inverseVP;
 			uniform mat4 _WorldToShadow;
+			uniform float _gShadowStrength;
 			
 			struct v2f
 			{
@@ -78,7 +79,7 @@ Shader "GLSL/ScreenSpaceShadowMapping/Collector"
 				vec4 col = texture(_LightDepthTex, uv);
 				float sampleDepth = col.r;
 
-				float shadow = (sampleDepth < depth - 0.05) ? 0.1 : 1.0;
+				float shadow = (sampleDepth < depth - 0.05) ? _gShadowStrength : 1.0;
 				gl_FragColor = vec4(shadow, shadow, shadow, shadow);
 			}
 			#endif
